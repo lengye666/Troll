@@ -2,7 +2,7 @@
 
 @interface LSApplicationWorkspace : NSObject
 + (instancetype)defaultWorkspace;
-- (NSArray *)installedApplications;
+- (NSArray *)allInstalledApplications;
 @end
 
 @interface LSApplicationProxy : NSObject
