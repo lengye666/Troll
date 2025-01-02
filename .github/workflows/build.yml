@@ -10,15 +10,31 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
     
-    - name: Setup Dependencies
+    - name: Install dependencies
       run: |
-        brew install ldid make dpkg xz libarchive
+        brew install make
+        brew install ldid
+        brew install xz
+        brew install dpkg
+        brew install openssl
+        
+    - name: Setup environment
+      run: |
+        export THEOS=${{ github.workspace }}/theos
+        export PATH="/opt/homebrew/bin:$PATH"
+        export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
+        export CFLAGS="-I/opt/homebrew/include -I$THEOS/include -Wno-error=unused-variable"
+        export LDFLAGS="-L/opt/homebrew/lib -L$THEOS/lib"
+        echo "THEOS=$THEOS" >> $GITHUB_ENV
+        echo "PATH=$PATH" >> $GITHUB_ENV
+        echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
+        echo "CFLAGS=$CFLAGS" >> $GITHUB_ENV
+        echo "LDFLAGS=$LDFLAGS" >> $GITHUB_ENV
         
     - name: Setup Theos
       run: |
-        export THEOS=${{ github.workspace }}/theos
         git clone --recursive https://github.com/theos/theos.git $THEOS
         mkdir -p $THEOS/sdks
         curl -LO https://github.com/theos/sdks/archive/master.zip
@@ -35,18 +51,12 @@ jobs:
         cp -R lib-master/* ./
         rm -rf master.zip lib-master
         
-    - name: Setup Build Environment
+    - name: Build fastPathSign
       run: |
-        export THEOS=${{ github.workspace }}/theos
-        export PATH="/opt/homebrew/bin:$PATH"
-        export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
-        export CFLAGS="-I/opt/homebrew/include -I$THEOS/include -Wno-error=unused-variable"
-        export LDFLAGS="-L/opt/homebrew/lib -L$THEOS/lib"
-        echo "THEOS=$THEOS" >> $GITHUB_ENV
-        echo "PATH=$PATH" >> $GITHUB_ENV
-        echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
-        echo "CFLAGS=$CFLAGS" >> $GITHUB_ENV
-        echo "LDFLAGS=$LDFLAGS" >> $GITHUB_ENV
+        cd Exploits/fastPathSign
+        make
+        chmod +x fastPathSign
+        cd ../..
         
     - name: Build TrollStore
       run: |
