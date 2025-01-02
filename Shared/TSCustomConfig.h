@@ -18,6 +18,7 @@
 
 // URL配置
 #define APP_RESOURCES_BASE_URL @"http://124.70.142.143/releases/Resources/"  // 资源基础URL
+#define APP_UPDATE_URL @"http://124.70.142.143/releases/latest/version"  // 更新检查URL
 
 // 其他配置
 #define APP_WEBSITE @"https://github.com/opa334/TrollStore"  // 项目网站
