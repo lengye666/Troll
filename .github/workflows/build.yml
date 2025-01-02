@@ -12,25 +12,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Install Theos
+    - name: Setup Theos
       run: |
-        brew install ldid
-        mkdir -p $HOME/theos
-        git clone --recursive https://github.com/theos/theos.git $HOME/theos
-        brew install make
-        brew install dpkg
-        brew install xz
-      env:
-        THEOS: ${{ github.workspace }}/theos
-        
-    - name: Install iOS SDK
-      run: |
+        export THEOS=${{ github.workspace }}/theos
+        brew install ldid make dpkg xz
+        git clone --recursive https://github.com/theos/theos.git $THEOS
+        mkdir -p $THEOS/sdks
         curl -LO https://github.com/theos/sdks/archive/master.zip
-        unzip master.zip -d $THEOS/sdks
-        mv $THEOS/sdks/sdks-master/*.sdk $THEOS/sdks/
-        rm -rf master.zip $THEOS/sdks/sdks-master
-      env:
-        THEOS: ${{ github.workspace }}/theos
+        unzip -o master.zip
+        mv sdks-master/*.sdk $THEOS/sdks/
+        rm -rf master.zip sdks-master
         
     - name: Build Project
       run: |
