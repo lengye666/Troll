@@ -28,10 +28,11 @@ jobs:
         
     - name: Setup Private Frameworks
       run: |
-        mkdir -p $THEOS/lib
+        mkdir -p ${{ github.workspace }}/theos/lib
+        cd ${{ github.workspace }}/theos/lib
         curl -LO https://github.com/theos/lib/archive/master.zip
-        unzip master.zip
-        cp -R lib-master/* $THEOS/lib/
+        unzip -o master.zip
+        cp -R lib-master/* ./
         rm -rf master.zip lib-master
         
     - name: Setup Build Environment
