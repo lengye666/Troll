@@ -3,7 +3,8 @@ name: Build TrollStore
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -13,7 +14,12 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: true
+        fetch-depth: 0
     
+    - name: Initialize submodules
+      run: |
+        git submodule update --init --recursive
+        
     - name: Setup Dependencies
       run: |
         brew install ldid make dpkg xz libarchive openssl pkg-config
@@ -24,16 +30,11 @@ jobs:
         git clone --recursive https://github.com/theos/theos.git $THEOS
         mkdir -p $THEOS/sdks
         curl -LO https://github.com/theos/sdks/archive/master.zip
-        unzip -o master.zip
-        mv sdks-master/*.sdk $THEOS/sdks/
-        rm -rf master.zip sdks-master
-        
-    - name: Setup Private Frameworks
-      run: |
-        mkdir -p ${{ github.workspace }}/theos/lib
-        cd ${{ github.workspace }}/theos/lib
+        unzip master.zip -d $THEOS/sdks
+        mv $THEOS/sdks/sdks-master/*.sdk $THEOS/sdks/
+        rm -rf master.zip $THEOS/sdks/sdks-master
         curl -LO https://github.com/theos/lib/archive/master.zip
-        unzip -o master.zip
+        unzip master.zip
         cp -R lib-master/* ./
         rm -rf master.zip lib-master
         
