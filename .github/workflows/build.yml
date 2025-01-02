@@ -10,17 +10,18 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Install Theos
       run: |
         brew install ldid
-        git clone --recursive https://github.com/theos/theos.git $THEOS
+        mkdir -p $HOME/theos
+        git clone --recursive https://github.com/theos/theos.git $HOME/theos
         brew install make
         brew install dpkg
         brew install xz
       env:
-        THEOS: /usr/local/theos
+        THEOS: ${{ github.workspace }}/theos
         
     - name: Install iOS SDK
       run: |
@@ -29,13 +30,13 @@ jobs:
         mv $THEOS/sdks/sdks-master/*.sdk $THEOS/sdks/
         rm -rf master.zip $THEOS/sdks/sdks-master
       env:
-        THEOS: /usr/local/theos
+        THEOS: ${{ github.workspace }}/theos
         
     - name: Build Project
       run: |
+        export PATH="/opt/homebrew/bin:$PATH"
+        export THEOS=${{ github.workspace }}/theos
         make package
-      env:
-        THEOS: /usr/local/theos
         
     - name: Create TrollStore Package
       run: |
