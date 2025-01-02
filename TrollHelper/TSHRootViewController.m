@@ -38,9 +38,9 @@
 		_specifiers = [NSMutableArray new];
 
 		#ifdef LEGACY_CT_BUG
-		NSString* credits = @"Powered by Fugu15 CoreTrust & installd bugs, thanks to @LinusHenze\n\n© 2022-2024 Lars Fröder (opa334)";
+		NSString* credits = @"祝贺2025越来越顺、身体健康、完事如意~淘宝老司机巨魔--淘宝IOS巨魔王优化项目使用更稳定！";
 		#else
-		NSString* credits = @"Powered by CVE-2023-41991, originally discovered by Google TAG, rediscovered via patchdiffing by @alfiecg_dev\n\n© 2022-2024 Lars Fröder (opa334)";
+		NSString* credits = @"仅退款删巨魔，禁止一切白嫖行为！尊重一切劳动成果！恶意差评、白嫖者祝2025百病缠身厄运连连！！！   巨魔王来了是个毛东西";
 		#endif
 
 		PSSpecifier* infoGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
@@ -86,7 +86,7 @@
 
 		if(isInstalled || trollStoreInstalledAppContainerPaths().count)
 		{
-			PSSpecifier* refreshAppRegistrationsSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Refresh App Registrations"
+			PSSpecifier* refreshAppRegistrationsSpecifier = [PSSpecifier preferenceSpecifierNamed:@"巨魔打不开没反应点我！"
 												target:self
 												set:nil
 												get:nil
@@ -100,7 +100,7 @@
 		}
 		if(isInstalled)
 		{
-			PSSpecifier* uninstallTrollStoreSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Uninstall TrollStore"
+			PSSpecifier* uninstallTrollStoreSpecifier = [PSSpecifier preferenceSpecifierNamed:@"卸 载 巨 魔（三思而后行！）"
 										target:self
 										set:nil
 										get:nil
@@ -115,7 +115,7 @@
 		}
 		else
 		{
-			PSSpecifier* installTrollStoreSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Install TrollStore"
+			PSSpecifier* installTrollStoreSpecifier = [PSSpecifier preferenceSpecifierNamed:@"安 装 巨 魔"
 												target:self
 												set:nil
 												get:nil
@@ -135,7 +135,7 @@
 			[_specifiers addObject:uninstallHelperGroupSpecifier];
 			lastGroupSpecifier = uninstallHelperGroupSpecifier;
 
-			PSSpecifier* uninstallPersistenceHelperSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Uninstall Persistence Helper"
+			PSSpecifier* uninstallPersistenceHelperSpecifier = [PSSpecifier preferenceSpecifierNamed:@"卸载巨魔持久化助手（三思而后行！）"
 												target:self
 												set:nil
 												get:nil
