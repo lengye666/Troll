@@ -196,7 +196,6 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 		//if (@available(iOS 16, *)) { } else {
 			NSString* ldidPath = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"ldid"];
 			NSString* ldidVersionPath = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"ldid.version"];
-			BOOL ldidInstalled = [[NSFileManager defaultManager] fileExistsAtPath:ldidPath];
 
 			NSString* ldidVersion = nil;
 			NSData* ldidVersionData = [NSData dataWithContentsOfFile:ldidVersionPath];
@@ -208,7 +207,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 			PSSpecifier* signingGroupSpecifier = [PSSpecifier emptyGroupSpecifier];
 			signingGroupSpecifier.name = @"签名";
 
-			if(ldidInstalled)
+			if([[NSFileManager defaultManager] fileExistsAtPath:ldidPath])
 			{
 				[signingGroupSpecifier setProperty:@"ldid 已安装，允许 TrollStore 安装未签名的 IPA 文件。" forKey:@"footerText"];
 			}
@@ -219,7 +218,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 
 			[_specifiers addObject:signingGroupSpecifier];
 
-			if(ldidInstalled)
+			if([[NSFileManager defaultManager] fileExistsAtPath:ldidPath])
 			{
 				NSString* installedTitle = @"ldid：已安装";
 				if(ldidVersion)
@@ -486,7 +485,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 {
     // 获取可用的系统应用列表
     NSMutableArray* appCandidates = [NSMutableArray new];
-    for(LSApplicationProxy* appProxy in [[LSApplicationWorkspace defaultWorkspace] installedApplications])
+    for(LSApplicationProxy* appProxy in [[LSApplicationWorkspace defaultWorkspace] valueForKey:@"allInstalledApplications"])
     {
         if(![appProxy.bundleType isEqualToString:@"System"]) continue;
         if(appProxy.installed)
