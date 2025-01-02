@@ -10,31 +10,17 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
     
-    - name: Install dependencies
+    - name: Setup Dependencies
       run: |
-        brew install make
-        brew install ldid
-        brew install xz
-        brew install dpkg
-        brew install openssl
-        
-    - name: Setup environment
-      run: |
-        export THEOS=${{ github.workspace }}/theos
-        export PATH="/opt/homebrew/bin:$PATH"
-        export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
-        export CFLAGS="-I/opt/homebrew/include -I$THEOS/include -Wno-error=unused-variable"
-        export LDFLAGS="-L/opt/homebrew/lib -L$THEOS/lib"
-        echo "THEOS=$THEOS" >> $GITHUB_ENV
-        echo "PATH=$PATH" >> $GITHUB_ENV
-        echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
-        echo "CFLAGS=$CFLAGS" >> $GITHUB_ENV
-        echo "LDFLAGS=$LDFLAGS" >> $GITHUB_ENV
+        brew install ldid make dpkg xz libarchive openssl pkg-config
         
     - name: Setup Theos
       run: |
+        export THEOS=${{ github.workspace }}/theos
         git clone --recursive https://github.com/theos/theos.git $THEOS
         mkdir -p $THEOS/sdks
         curl -LO https://github.com/theos/sdks/archive/master.zip
@@ -51,9 +37,23 @@ jobs:
         cp -R lib-master/* ./
         rm -rf master.zip lib-master
         
+    - name: Setup Build Environment
+      run: |
+        export THEOS=${{ github.workspace }}/theos
+        export PATH="/opt/homebrew/bin:$PATH"
+        export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
+        export CFLAGS="-I/opt/homebrew/include -I$THEOS/include -Wno-error=unused-variable"
+        export LDFLAGS="-L/opt/homebrew/lib -L$THEOS/lib"
+        echo "THEOS=$THEOS" >> $GITHUB_ENV
+        echo "PATH=$PATH" >> $GITHUB_ENV
+        echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
+        echo "CFLAGS=$CFLAGS" >> $GITHUB_ENV
+        echo "LDFLAGS=$LDFLAGS" >> $GITHUB_ENV
+        
     - name: Build fastPathSign
       run: |
         cd Exploits/fastPathSign
+        export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl/lib/pkgconfig:$PKG_CONFIG_PATH"
         make
         chmod +x fastPathSign
         cd ../..
