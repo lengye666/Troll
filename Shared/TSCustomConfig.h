@@ -2,8 +2,13 @@
 #define TSCustomConfig_h
 
 // 应用名称配置
+#ifndef APP_NAME
 #define APP_NAME @"TB老司机巨魔"  // 替换为您想要的应用名称
+#endif
+
+#ifndef APP_BUNDLE_ID
 #define APP_BUNDLE_ID @"com.tb.laosijijumo"  // 替换为您的Bundle ID
+#endif
 
 // UI文字配置
 #define APP_TITLE @"TB老司机巨魔"  // 主标题
@@ -11,8 +16,7 @@
 #define APP_ADVANCED_SETTINGS_TITLE @"高级设置"  // 高级设置标题
 #define APP_DONATE_TITLE @"支持开发者"  // 捐赠页面标题
 
-// 更新和资源URL配置
-#define APP_UPDATE_URL @"http://124.70.142.143/releases/latest"  // 更新检查URL
+// URL配置
 #define APP_RESOURCES_BASE_URL @"http://124.70.142.143/releases/Resources/"  // 资源基础URL
 
 // 其他配置
