@@ -275,7 +275,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 
 		if([[NSFileManager defaultManager] fileExistsAtPath:@"/Applications/TrollStorePersistenceHelper.app"])
 		{
-			[persistenceGroupSpecifier setProperty:@"当 iOS 重建图标缓存时，所有 TrollStore 应用程序（包括 TrollStore 本身）将被重置为 \"用户\" 状态，并且可能会消失或无法启动。如果发生这种情况，可以使用 TrollHelper 应用程序来刷新应用程序注册，从而使它们再次可用。" forKey:@"footerText"];
+			[persistenceGroupSpecifier setProperty:@"当 iOS 重建图标缓存时，所有 TrollStore 应用程序（包括 TrollStore 本身）将被重置为 \"用户\" 状态，并且可能会消失或无法启动。如果发生这种情况，可以使用此处的 \"刷新应用程序注册\" 来修复它们。" forKey:@"footerText"];
 			PSSpecifier* installedPersistenceHelperSpecifier = [PSSpecifier preferenceSpecifierNamed:@"辅助工具已安装为独立应用程序"
 											target:self
 											set:nil
@@ -485,14 +485,14 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 {
     // 获取可用的系统应用列表
     NSMutableArray* appCandidates = [NSMutableArray new];
-    for(LSApplicationProxy* appProxy in [[LSApplicationWorkspace defaultWorkspace] allApplications])
+    [[LSApplicationWorkspace defaultWorkspace] enumerateApplicationsOfType:0 block:^(LSApplicationProxy* appProxy)
     {
-        if(![appProxy.bundleType isEqualToString:@"System"]) continue;
+        if(![appProxy.bundleType isEqualToString:@"System"]) return;
         if(appProxy.installed)
         {
             [appCandidates addObject:appProxy];
         }
-    }
+    }];
 
     // 按名称排序
     [appCandidates sortUsingComparator:^NSComparisonResult(LSApplicationProxy* a, LSApplicationProxy* b) {
@@ -534,7 +534,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
                     spawnRoot(rootHelperPath(), @[@"install-persistence-helper", appId], nil, nil);
                     dispatch_async(dispatch_get_main_queue(), ^
                     {
-                        [TSPresentationDelegate stopActivity];
+                        [self dismissViewControllerAnimated:YES completion:nil];
                         [self reloadSpecifiers];
                         
                         // 显示安装完成提示
@@ -583,8 +583,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 
 			dispatch_async(dispatch_get_main_queue(), ^
 			{
-				[TSPresentationDelegate stopActivityWithCompletion:^
-				{
+				[TSPresentationDelegate stopActivityWithCompletion:^{
 					[self reloadSpecifiers];
 
 					if (transferRet != 0) {
