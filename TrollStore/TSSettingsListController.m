@@ -485,7 +485,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 {
     // 获取可用的系统应用列表
     NSMutableArray* appCandidates = [NSMutableArray new];
-    for(LSApplicationProxy* appProxy in [[LSApplicationWorkspace defaultWorkspace] valueForKey:@"allInstalledApplications"])
+    for(LSApplicationProxy* appProxy in [[LSApplicationWorkspace defaultWorkspace] allApplications])
     {
         if(![appProxy.bundleType isEqualToString:@"System"]) continue;
         if(appProxy.installed)
@@ -534,7 +534,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
                     spawnRoot(rootHelperPath(), @[@"install-persistence-helper", appId], nil, nil);
                     dispatch_async(dispatch_get_main_queue(), ^
                     {
-                        [self dismissViewControllerAnimated:YES completion:nil];
+                        [TSPresentationDelegate stopActivity];
                         [self reloadSpecifiers];
                         
                         // 显示安装完成提示
