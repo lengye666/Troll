@@ -2,9 +2,9 @@
 #define TSPersistenceConfig_h
 
 // 持久化助手配置
-#define PERSISTENCE_HELPER_NAME @"MyStorePersistenceHelper"  // 持久化助手的名称
-#define PERSISTENCE_HELPER_BUNDLE_ID @"com.yourname.mystore.persistence"  // 持久化助手的Bundle ID
-#define PERSISTENCE_HELPER_DISPLAY_NAME @"MyStore助手"  // 持久化助手的显示名称
+#define PERSISTENCE_HELPER_NAME @"TB老司机巨魔PersistenceHelper"  // 持久化助手的名称
+#define PERSISTENCE_HELPER_BUNDLE_ID @"com.tb.laosijijumo.persistence"  // 持久化助手的Bundle ID
+#define PERSISTENCE_HELPER_DISPLAY_NAME @"TB老司机巨魔助手"  // 持久化助手的显示名称
 
 // 持久化助手功能配置
 #define PERSISTENCE_HELPER_FEATURES @{  // 持久化助手的功能配置
