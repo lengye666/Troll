@@ -23,16 +23,34 @@ jobs:
         mv sdks-master/*.sdk $THEOS/sdks/
         rm -rf master.zip sdks-master
         
-    - name: Build Project
+    - name: List Files
+      run: |
+        pwd
+        ls -la
+        
+    - name: Build TrollStore
       run: |
         export PATH="/opt/homebrew/bin:$PATH"
         export THEOS=${{ github.workspace }}/theos
+        cd TrollStore
+        make package
+        
+    - name: Build TrollHelper
+      run: |
+        cd TrollHelper
+        make package
+        
+    - name: Build PersistenceHelper
+      run: |
+        cd PersistenceHelper
         make package
         
     - name: Create TrollStore Package
       run: |
         mkdir -p package/TrollStore.app
-        cp -r .theos/obj/debug/* package/TrollStore.app/
+        cp -r TrollStore/.theos/obj/debug/* package/TrollStore.app/
+        cp -r TrollHelper/.theos/obj/debug/* package/TrollStore.app/
+        cp -r PersistenceHelper/.theos/obj/debug/* package/TrollStore.app/
         cd package
         tar -czf TrollStore.tar TrollStore.app
         
