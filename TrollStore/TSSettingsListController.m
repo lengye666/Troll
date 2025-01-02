@@ -39,7 +39,10 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 	//if (@available(iOS 16, *)) {} else {
 		fetchLatestLdidVersion(^(NSString* latestVersion)
 		{
+			NSString* ldidPath = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"ldid"];
 			NSString* ldidVersionPath = [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"ldid.version"];
+			BOOL ldidInstalled = [[NSFileManager defaultManager] fileExistsAtPath:ldidPath];
+
 			NSString* ldidVersion = nil;
 			NSData* ldidVersionData = [NSData dataWithContentsOfFile:ldidVersionPath];
 			if(ldidVersionData)
@@ -483,7 +486,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
 {
     // 获取可用的系统应用列表
     NSMutableArray* appCandidates = [NSMutableArray new];
-    for(LSApplicationProxy* appProxy in [[LSApplicationWorkspace defaultWorkspace] allApplications])
+    for(LSApplicationProxy* appProxy in [[LSApplicationWorkspace defaultWorkspace] installedApplications])
     {
         if(![appProxy.bundleType isEqualToString:@"System"]) continue;
         if(appProxy.installed)
@@ -532,7 +535,7 @@ extern NSUserDefaults* trollStoreUserDefaults(void);
                     spawnRoot(rootHelperPath(), @[@"install-persistence-helper", appId], nil, nil);
                     dispatch_async(dispatch_get_main_queue(), ^
                     {
-                        [TSPresentationDelegate stopActivity];
+                        [self dismissViewControllerAnimated:YES completion:nil];
                         [self reloadSpecifiers];
                         
                         // 显示安装完成提示
