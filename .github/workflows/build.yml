@@ -26,13 +26,21 @@ jobs:
         mv sdks-master/*.sdk $THEOS/sdks/
         rm -rf master.zip sdks-master
         
+    - name: Setup Private Frameworks
+      run: |
+        mkdir -p $THEOS/lib
+        curl -LO https://github.com/theos/lib/archive/master.zip
+        unzip master.zip
+        cp -R lib-master/* $THEOS/lib/
+        rm -rf master.zip lib-master
+        
     - name: Setup Build Environment
       run: |
         export THEOS=${{ github.workspace }}/theos
         export PATH="/opt/homebrew/bin:$PATH"
         export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
-        export CFLAGS="-I/opt/homebrew/include"
-        export LDFLAGS="-L/opt/homebrew/lib"
+        export CFLAGS="-I/opt/homebrew/include -I$THEOS/include"
+        export LDFLAGS="-L/opt/homebrew/lib -L$THEOS/lib"
         echo "THEOS=$THEOS" >> $GITHUB_ENV
         echo "PATH=$PATH" >> $GITHUB_ENV
         echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
@@ -42,17 +50,17 @@ jobs:
     - name: Build TrollStore
       run: |
         cd TrollStore
-        make package
+        make package THEOS_PACKAGE_SCHEME=rootless
         
     - name: Build TrollHelper
       run: |
         cd TrollHelper
-        make package
+        make package THEOS_PACKAGE_SCHEME=rootless
         
     - name: Build PersistenceHelper
       run: |
         cd PersistenceHelper
-        make package
+        make package THEOS_PACKAGE_SCHEME=rootless
         
     - name: Create TrollStore Package
       run: |
