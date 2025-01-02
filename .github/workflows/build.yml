@@ -12,10 +12,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
+    - name: Setup Dependencies
+      run: |
+        brew install ldid make dpkg xz libarchive
+        
     - name: Setup Theos
       run: |
         export THEOS=${{ github.workspace }}/theos
-        brew install ldid make dpkg xz
         git clone --recursive https://github.com/theos/theos.git $THEOS
         mkdir -p $THEOS/sdks
         curl -LO https://github.com/theos/sdks/archive/master.zip
@@ -23,15 +26,21 @@ jobs:
         mv sdks-master/*.sdk $THEOS/sdks/
         rm -rf master.zip sdks-master
         
-    - name: List Files
+    - name: Setup Build Environment
       run: |
-        pwd
-        ls -la
+        export THEOS=${{ github.workspace }}/theos
+        export PATH="/opt/homebrew/bin:$PATH"
+        export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
+        export CFLAGS="-I/opt/homebrew/include"
+        export LDFLAGS="-L/opt/homebrew/lib"
+        echo "THEOS=$THEOS" >> $GITHUB_ENV
+        echo "PATH=$PATH" >> $GITHUB_ENV
+        echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
+        echo "CFLAGS=$CFLAGS" >> $GITHUB_ENV
+        echo "LDFLAGS=$LDFLAGS" >> $GITHUB_ENV
         
     - name: Build TrollStore
       run: |
-        export PATH="/opt/homebrew/bin:$PATH"
-        export THEOS=${{ github.workspace }}/theos
         cd TrollStore
         make package
         
